@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>customElements</title>
+</head>
+<style>
+    *{
+        margin: 0 auto;
+        padding: 0;
+        bgc
+    }
+    ekb-div{
+        width: 200px;
+        height: 50px;
+        background-color: skyblue;
+
+    }
+</style>
+<body>
+    <ekb-div id="ekb-div"></ekb-div>
+  <script>
+    // 创建一个 <ekb-div> 的元素，名为 el
+    const el = document.createElement('ekb-div')
+    const arr = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+   
+    // 定义并继承一个名为 <ekb-div> 的组件
+    customElements.define('ekb-div',class extends HTMLDivElement {
+    static observedAttributes = ['id']
+      constructor () {
+        super()
+        this.placeholder = '属于我们的输入框！'
+        this.disabled = true
+
+        // 相当于 Vue 的 setup
+        console.log('先运行构造函数')
+      }
+      connectedCallback () {
+        // 相当于 Vue 的 mounted
+        console.log('再运行连接回调')
+      }
+      disconnectedCallback () {
+        // 相当于 Vue 的 unmounted
+        console.log('当删除组件时才会运行失联回调')
+      }
+      adoptedCallback () {
+        // 当使用 document.adoptNode 后会触发该生命周期
+        console.log('当使用 document.adoptNode 后会运行收养回调')
+      }
+
+      attributeChangedCallback (name, oldValue, newValue) {
+        // 相当于 Vue 的 watch
+        if (oldValue === newValue) return
+
+        switch (name) {
+          case 'id':
+            console.log(`oldValue: ${oldValue}, newValue: ${newValue}`)
+        }
+      }
+    },{ extends: 'div' })
+
+    // 获取 <ekb-div> 组件的构造函数
+    customElements.get('ekb-div')
+
+    // 升级我们之前创建的 el 元素
+    customElements.upgrade(el)
+
+    // 当 <a-b-c> 组件定义后
+    customElements.whenDefined('ekb-div').then(() => { 
+        /* 当 <ekb-div> 组件定义后的回掉函数 */
+            console.log('当组件被定义时候使用的回调')
+     })
+
+    setInterval(() => el.id = arr[Math.round(Math.random() * 25)], 1000)
+  </script>
+</body>
+</html>
